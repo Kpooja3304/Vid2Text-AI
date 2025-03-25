@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vid2Text AI - Video Transcription & Summarization</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>🎬 Vid2Text AI</h1>
+        <p>Convert YouTube videos into transcripts and summaries in multiple languages!</p>
+
+        <label for="video_url">📌 Enter YouTube Video URL:</label>
+        <input type="text" id="video_url" placeholder="Paste video link here...">
+
+        <label for="transcript_lang">📝 Select Transcript Language:</label>
+        <select id="transcript_lang">
+            {% for lang in languages %}
+                <option value="{{ lang }}">{{ lang }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="summary_lang">📄 Select Summary Language:</label>
+        <select id="summary_lang">
+            {% for lang in languages %}
+                <option value="{{ lang }}">{{ lang }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="summary_format">📃 Choose Summary Format:</label>
+        <select id="summary_format">
+            <option value="Paragraph">Paragraph</option>
+            <option value="Bullet Points">Bullet Points</option>
+            <option value="Key Highlights">Key Highlights</option>
+        </select>
+
+        <button id="processBtn">🔍 Process Video</button>
+
+        <div id="loading" class="hidden">⏳ Processing, please wait...</div>
+
+        <div id="results" class="hidden">
+            <h2>📜 Transcript</h2>
+            <p><strong>English:</strong> <span id="transcript_en"></span></p>
+            <p><strong>Selected Language:</strong> <span id="transcript_selected"></span></p>
+
+            <h2>📌 Summary</h2>
+            <p><strong>English:</strong> <span id="summary_en"></span></p>
+            <p><strong>Selected Language:</strong> <span id="summary_selected"></span></p>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

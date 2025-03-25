@@ -1,0 +1,6 @@
+flask
+torch
+yt-dlp
+faster-whisper
+transformers
+deep-translator
