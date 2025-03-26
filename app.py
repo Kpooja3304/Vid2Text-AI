@@ -22,10 +22,10 @@ LANGUAGES = {
     "Chinese": "zh"
 }
 
-# --- Load Whisper Model ---
+# --- Load Whisper Model (Optimized) ---
 device = "cpu"  # Optimized for CPU
-model_size = "small"
-whisper_model = WhisperModel(model_size, device=device, compute_type="int8")
+model_size = "medium"  # Improved accuracy with minimal memory impact
+whisper_model = WhisperModel(model_size, device=device, compute_type="float16")
 
 # --- Load Summarization Model ---
 summarizer = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6", device=-1)
@@ -78,7 +78,7 @@ def process_video():
 
             # --- Step 2: Transcribe Audio ---
             try:
-                segments, _ = whisper_model.transcribe(audio_path, beam_size=2, language="en")
+                segments, _ = whisper_model.transcribe(audio_path, beam_size=1, language="en")  # Reduced beam_size for efficiency
                 transcript_text = " ".join(segment.text for segment in segments).strip()
                 if not transcript_text:
                     return jsonify({"error": "No text transcribed from the audio."}), 500
@@ -95,16 +95,16 @@ def process_video():
 
             print("✅ Translation completed!")
 
-            # --- Step 4: Summarize Transcript ---
+            # --- Step 4: Summarize Transcript (Optimized) ---
             try:
-                def chunk_text(text, max_words=400):
+                def chunk_text(text, max_words=300):  # Reduced chunk size for efficiency
                     words = text.split()
-                    return [" ".join(words[i:i + max_words]) for i in range(0, len(words), max_words)] if words else []
+                    return [" ".join(words[i:i + max_words]) for i in range(0, len(words), max_words)][:3]  # Max 3 chunks
 
-                chunks = chunk_text(transcript_text, max_words=400)
+                chunks = chunk_text(transcript_text)
                 summary_text = ""
                 for chunk in chunks:
-                    summary_result = summarizer(chunk, max_length=150, min_length=50, do_sample=False)
+                    summary_result = summarizer(chunk, max_length=120, min_length=50, do_sample=False)
                     summary_text += summary_result[0]["summary_text"] + " "
                 
                 if summary_format == "Bullet Points":
@@ -137,4 +137,3 @@ def process_video():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))  # Render assigns a port
     app.run(host="0.0.0.0", port=port)
-    app.run(debug=True)
