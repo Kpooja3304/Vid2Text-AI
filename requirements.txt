@@ -4,3 +4,4 @@ yt-dlp
 whisper
 transformers
 torch
+openai-whisper
