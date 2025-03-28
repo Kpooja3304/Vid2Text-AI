@@ -15,7 +15,7 @@ summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    return "Video Transcript Summarizer API is running!"
 
 def download_audio(youtube_url):
     """Download audio from YouTube and return the file path."""
@@ -53,3 +53,6 @@ def transcribe():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+if __name__ == "__main__":
+    app.run()
